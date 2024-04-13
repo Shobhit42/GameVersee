@@ -5,7 +5,7 @@ export default function Logo() {
     return (
         <div className=" flex cursor-pointer">
             <Image 
-                src="/vector.svg"
+                src="/Vector.png"
                 alt="Vercel Logo"
                 className="max-w-full"
                 width={40}
