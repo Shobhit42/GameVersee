@@ -24,9 +24,15 @@ const Mode: React.FC<ModeProps> = ({ mode_name, tap, onClick, games }) => {
        </div>
        {tap ?
         <div className="flex flex-row ">
-          {games.map((games,index)=>(
-            <Gamebox Game_name={games.game_name} Game_img={games.game_img} Game_link={games.game_link} />
-          ))};
+          {games.map((game, index) => (
+  <Gamebox
+    key={index} // Provide a unique key prop
+    Game_name={game.game_name}
+    Game_img={game.game_img}
+    Game_link={game.game_link}
+  />
+))};
+
           
         </div>: <></>
 }
