@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@font-face {
+  font-family: 'gamefont'; /* Choose a name for your font */
+  src: url('/fonts/BruceForeverRegular-X3jd2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+body {
+  color: rgb(var(--foreground-rgb));
+  font-family: 'gamefont', sans-serif;
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.single {
+  background-image: url('/single.jpg'); /* Replace with your actual image path */
+  background-size: cover;
+  background-attachment: fixed;
+}
+.multiple {
+  background-image: url('/multiple.jpg'); /* Replace with your actual image path */
+  background-size: cover;
+  background-attachment: fixed;
+}
+.ai {
+  background-image: url('/ai.jpg'); /* Replace with your actual image path */
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.loading {
+  background-color: #f4f4f4;
+}
+
+.loadingSpinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

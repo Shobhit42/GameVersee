@@ -1,0 +1,9 @@
+/* Home.css */
+.game-image {
+    transition: transform 0.3s ease; /* Add transition for smooth zoom effect */
+  }
+  
+  .game-image:hover {
+    transform: scale(1.1); /* Zoom effect on hover */
+  }
+  
