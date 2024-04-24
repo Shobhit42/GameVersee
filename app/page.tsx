@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Logo from '../pages/logo';
 import Mode from '../pages/mode';
-import { Login } from "d:/Crome Downloads/gameverse/frontendgame/pages/login";
+import { Login } from "../pages/login";
 import './Home.css'; // Import CSS file for styling
 
 export default function Home() {
