@@ -54,7 +54,7 @@ export const Login: React.FC<LoginProps> = ({ onClose }) => {
         </form>
         <div className="px-6 py-2">
           <p className="text-sm text-gray-700">
-            Don't have an account?{' '}
+            Don't have an account?
             <button onClick={handleRegisterClick} className="text-blue-500 hover:underline focus:outline-none">
               Register here
             </button>
