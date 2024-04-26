@@ -9,6 +9,24 @@ export default function Home() {
 
   const [selectedMode, setSelectedMode] = useState<string>('single');
   const [showLogin, setShowLogin] = useState<boolean>(false); // State to manage login modal visibility
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>('');
+
+  useEffect(() => {
+    // Check if user is logged in
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setIsLoggedIn(true);
+      setUsername(storedUsername);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    // Clear username from localStorage and reset state
+    localStorage.removeItem('username');
+    setIsLoggedIn(false);
+    setUsername('');
+  };
 
   const handleModeClick = (mode: string) => {
     setSelectedMode(mode);
@@ -51,31 +69,51 @@ export default function Home() {
   ]
 
   return (
-    <>    {loading && (
+    <>
+    {/* Loading Spinner */}
+    {loading && (
       <div className="loadingSpinner">
         <img src="/loading-spinner.gif" alt="Loading Spinner" width={50} />
       </div>
     )}
-
-      {!loading && (
-        <main className={`flex min-h-screen flex-col ${selectedMode} font-[gamefont] relative`}>
-          {/* Login Modal */}
-          {showLogin && <Login onClose={handleLoginClose} />}
-
-          <div className="min-h-screen bg-black  p-10 bg-opacity-0">
-            {/* Login Button */}
-            <button className="absolute top-4 right-4 bg-transparent border border-white text-white px-4 py-2 rounded-md" onClick={handleLoginClick}>Login</button>
-         
-            <Logo />
-            
-            <Mode mode_name="Single Player" tap={selectedMode === 'single'} onClick={() => handleModeClick('single')} games={singlegames} />
-            <Mode mode_name="Multi Player" tap={selectedMode === 'multiple'} onClick={() => handleModeClick('multiple')} games={multigames} />
-            <Mode mode_name="Versus AI" tap={selectedMode === 'ai'} onClick={() => handleModeClick('ai')} games={aigames} />
+  
+    {/* Main content */}
+    {!loading && (
+      <main className={`flex min-h-screen flex-col ${selectedMode} font-[gamefont] relative`}>
+        {/* Login Modal */}
+        {showLogin && <Login onClose={handleLoginClose} />}
+  
+        <div className="min-h-screen bg-black  p-10 bg-opacity-0">
+          {/* Conditional rendering for Login or Username/Logout */}
+          {isLoggedIn ? (
+            <div className="absolute top-8 right-10 text-white flex items-center">
+            <p className="mr-10">Hello, {username}!</p>
+            <button className="bg-transparent border border-white text-white px-4 py-2 rounded-md hover:bg-green-400 hover:text-gray-900 transition duration-300" onClick={handleLogout}>
+              Logout
+            </button>
           </div>
-        </main>
-      )}
-
-    </>
+          
+          ) : (
+            <button 
+              className="absolute top-8 right-10 bg-transparent border border-white text-white px-4 py-2 rounded-md hover:bg-green-400 hover:text-gray-900 transition duration-300" 
+              onClick={handleLoginClick}
+            >
+              Login
+            </button>
+          )}
+  
+          {/* Logo */}
+          <Logo />
+          
+          {/* Mode components */}
+          <Mode mode_name="Single Player" tap={selectedMode === 'single'} onClick={() => handleModeClick('single')} games={singlegames} />
+          <Mode mode_name="Multi Player" tap={selectedMode === 'multiple'} onClick={() => handleModeClick('multiple')} games={multigames} />
+          <Mode mode_name="Versus AI" tap={selectedMode === 'ai'} onClick={() => handleModeClick('ai')} games={aigames} />
+        </div>
+      </main>
+    )}
+  </>
+  
 
   );
 }

@@ -1,5 +1,6 @@
 // pages/login/Login.tsx
 
+
 import React, { useState } from 'react';
 import { Registration } from './registration'; // Import the Registration component
 
@@ -8,7 +9,53 @@ interface LoginProps {
 }
 
 export const Login: React.FC<LoginProps> = ({ onClose }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showRegistration, setShowRegistration] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
+  // Added to manage error messages
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleLogin = async (e:any) => {
+    e.preventDefault();
+    
+
+    // Replace with your actual API endpoint
+    const response = await fetch('https://majorproject-backend-1.onrender.com/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    try {
+      if (response.ok) {
+        // Login successful
+        setShowAlert(true);
+        setEmail('');
+        setPassword('');
+        setErrorMessage(''); // Clear any previous error messages
+         // Get user data from response
+        //const userData = await response.json();
+
+        const responseData = await response.json();
+        const { user } = responseData;
+
+        // Store username in localStorage
+        localStorage.setItem('username', user.name);
+        
+        window.location.reload();
+        
+      } else {
+        // Login failed with proper error handling
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || 'Login failed'); // Use specific error message from response (if available) or a generic message
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      setErrorMessage('An unexpected error occurred. Please try again later.');
+    }
+  };
 
   const handleRegisterClick = () => {
     setShowRegistration(true);
@@ -25,7 +72,13 @@ export const Login: React.FC<LoginProps> = ({ onClose }) => {
             </svg>
           </button>
         </div>
-        <form className="px-6 py-4">
+        {showAlert }
+        {errorMessage && (
+          <div className="alert alert-danger px-6 py-3 mb-4 rounded" role="alert">
+            {errorMessage}
+          </div>
+        )}
+        <form className="px-6 py-4" onSubmit={handleLogin}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-800">Email</label>
             <input
@@ -33,6 +86,8 @@ export const Login: React.FC<LoginProps> = ({ onClose }) => {
               id="email"
               className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 border-none rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="mb-4">
@@ -42,6 +97,8 @@ export const Login: React.FC<LoginProps> = ({ onClose }) => {
               id="password"
               className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 border-none rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <button

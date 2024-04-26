@@ -1,12 +1,49 @@
-// pages/login/Registration.tsx
-
-import React from 'react';
+import React, { useState } from 'react';
 
 interface RegistrationProps {
   onClose: () => void;
 }
 
 export const Registration: React.FC<RegistrationProps> = ({ onClose }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [registering, setRegistering] = useState(false);
+  const [registerSuccess, setRegisterSuccess] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setRegistering(true);
+
+    try {
+      const response = await fetch('https://majorproject-backend-1.onrender.com/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.message === 'register successful') {
+        setRegisterSuccess(true);
+        localStorage.setItem('username', name); // Store username in localStorage
+        
+        window.location.reload();
+      } else {
+        // Handle registration failure (e.g., display an error message)
+        console.error('Registration failed:', data.message);
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+    } finally {
+      setRegistering(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-gray-900 bg-opacity-70 backdrop-blur-lg flex items-center justify-center">
       <div className="w-96 bg-white rounded-lg shadow-lg overflow-hidden">
@@ -18,7 +55,7 @@ export const Registration: React.FC<RegistrationProps> = ({ onClose }) => {
             </svg>
           </button>
         </div>
-        <form className="px-6 py-4">
+        <form className="px-6 py-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name" className="block text-gray-800">Name</label>
             <input
@@ -26,6 +63,8 @@ export const Registration: React.FC<RegistrationProps> = ({ onClose }) => {
               id="name"
               className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 border-none rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="mb-4">
@@ -35,6 +74,8 @@ export const Registration: React.FC<RegistrationProps> = ({ onClose }) => {
               id="email"
               className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 border-none rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="mb-4">
@@ -42,20 +83,27 @@ export const Registration: React.FC<RegistrationProps> = ({ onClose }) => {
             <input
               type="password"
               id="password"
-              className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 border-none rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 mt-1 text-gray-800 bg-gray-200 border-none rounded-md
+              focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <button
             type="submit"
-            className="w-full py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className={`w-full py-2 text-white ${registering ? 'bg-green-500' : 'bg-blue-500'} rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
+            disabled={registering}
           >
-            Register
+            {registering ? 'Registering...' : 'Register'}
           </button>
+
         </form>
+
+        {registerSuccess}
       </div>
     </div>
   );
 };
 
-export default Registration; // Export Registration component as default
+export default Registration;
